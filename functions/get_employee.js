@@ -10,9 +10,14 @@
  */
 exports.handler = async function (context, event, callback) {
   const axios = require("axios");
-  const userId = event.userId;
+
   const response = new Twilio.Response();
   response.appendHeader("Content-Type", "application/json");
+
+  if (!event.userId) {
+    return callback("Missing required param userId");
+  }
+  const userId = event.userId;
   console.log("Looking up Employee ID: ", userId);
 
   // Endpoint constructed from environment variables

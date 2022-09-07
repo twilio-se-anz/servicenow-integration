@@ -1,26 +1,25 @@
-// This is your new function. To start, set the name and path on the left.
+/**
+ * @file Creates a new service now incident
+ * @author Chris Connolly <cconnolly@twilio.com>
+ * @version 1.0.0
+ * @param {object} context - Serverless context
+ * @param {object} event - Request params, headers
+ * @param {function} callback - Function call back
+ * @returns {function} - Serverless handler
+ * @constructor
+ */
 
 exports.handler = async function (context, event, callback) {
-  // Here's an example of setting up some TWiML to respond to with this function
-
   const axios = require("axios").default;
-  /**
-   * @file Creates a new service now incident
-   * @author Chris Connolly <cconnolly@twilio.com>
-   * @version 1.0.0
-   * @param {object} context - Serverless context
-   * @param {object} event - Request params, headers
-   * @param {function} callback - Function call back
-   * @returns {function} - Serverless handler
-   * @constructor
-   */
-  const userId = event.userId;
   const response = new Twilio.Response();
   response.appendHeader("Content-Type", "application/json");
-  console.log("Creating new SNOW interaction for user: ", userId);
 
+  if (!event.sys_id) {
+    return callback("Missing required param sys_id");
+  }
+  console.log("Creating new SNOW interaction for sys_id: ", sys_id);
+  const sys_id = event.sys_id;
   endPoint = `${context.SERVICE_NOW_API_ROOT}/now/table/interaction`;
-
   console.log(endPoint);
 
   // Make a request for a user with a given SNOW sys_id (user)
@@ -48,7 +47,9 @@ exports.handler = async function (context, event, callback) {
         // handle success
         let incident = data.result[0];
         response.setBody(incident);
-        console.log("Incident created: ", incident.number);
+        console.log(
+          `Incident created ${incident.number} with sys_id: ${incident.sys_id}`
+        );
       }
 
       return callback(null, response);

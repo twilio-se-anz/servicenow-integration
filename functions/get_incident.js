@@ -9,16 +9,17 @@
  * @constructor
  */
 exports.handler = async function (context, event, callback) {
-  // Here's an example of setting up some TWiML to respond to with this function
-
   const axios = require("axios").default;
-  const sys_id = event.sys_id;
   const response = new Twilio.Response();
   response.appendHeader("Content-Type", "application/json");
+
+  if (!event.sys_id) {
+    return callback("Missing required param sys_id");
+  }
+
+  const sys_id = event.sys_id;
   console.log("Finding incidents for SNOW user: ", sys_id);
-
   endPoint = `${context.SERVICE_NOW_API_ROOT}/now/table/incident?sysparm_query=sys_id%3D${sys_id}%5Estate!%3D7&sysparm_limit=1`;
-
   console.log(endPoint);
 
   // Make a request for a user with a given SNOW sys_id (user)
@@ -34,19 +35,18 @@ exports.handler = async function (context, event, callback) {
   })
     .then(({ data }) => {
       // handle success
-      console.log(
-        "SNOW create interaction data",
-        JSON.stringify(data, null, 2)
-      );
-      // Employee not found
-      if (!data || !data.result || data.result.length < 1) {
+      console.log("SNOW data lookup", JSON.stringify(data, null, 2));
+      // Incident not found
+      if (!data || !data.result) {
         console.log("No incidents found, data.result not found");
         return callback(null, {});
       } else {
         // handle success
-        let incident = data.result[0];
+        let incident = data.result;
         response.setBody(incident);
-        console.log("Incident found: ", incident.number);
+        console.log(
+          `Incident found ${incident.number} with sys_id: ${incident.sys_id}`
+        );
       }
 
       return callback(null, response);
