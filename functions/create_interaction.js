@@ -17,8 +17,8 @@ exports.handler = async function (context, event, callback) {
   if (!event.sys_id) {
     return callback("Missing required param sys_id");
   }
-  console.log("Creating new SNOW interaction for sys_id: ", sys_id);
   const sys_id = event.sys_id;
+  console.log("Creating new SNOW interaction for sys_id: ", sys_id);
   endPoint = `${context.SERVICE_NOW_API_ROOT}/now/table/interaction`;
   console.log(endPoint);
 
