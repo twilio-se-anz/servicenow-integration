@@ -36,19 +36,19 @@ exports.handler = async function (context, event, callback) {
     .then(({ data }) => {
       // handle success
       console.log(
-        "SNOW create incident result data",
+        "SNOW create interaction result data",
         JSON.stringify(data, null, 2)
       );
       // Employee not found
       if (!data || !data.result || data.result.length < 1) {
-        console.log("Incident NOT created, data.result not found");
+        console.log("Interaction NOT created, data.result not found");
         return callback(null, {});
       } else {
         // handle success
-        let incident = data.result[0];
-        response.setBody(incident);
+        let interaction = data.result[0];
+        response.setBody(interaction);
         console.log(
-          `Incident created ${incident.number} with sys_id: ${incident.sys_id}`
+          `Interaction created ${interaction.number} with sys_id: ${interaction.sys_id}`
         );
       }
 
