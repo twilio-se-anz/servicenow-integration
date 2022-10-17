@@ -14,10 +14,10 @@ exports.handler = async function (context, event, callback) {
   const response = new Twilio.Response();
   response.appendHeader("Content-Type", "application/json");
 
-  if (!event.userPhone) {
-    return callback("Missing required param userPhone");
+  if (!event.from) {
+    return callback("Missing required param 'from'");
   }
-  const userPhone = event.from.replace("+", "%2B");
+  const userPhone = event.from.replace("+61", "0");
   console.log("Looking up user by phone: ", userPhone);
 
   // Endpoint constructed from environment variables

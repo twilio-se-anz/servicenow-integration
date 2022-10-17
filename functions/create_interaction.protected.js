@@ -14,10 +14,7 @@ exports.handler = async function (context, event, callback) {
   const response = new Twilio.Response();
   response.appendHeader("Content-Type", "application/json");
 
-  if (!event.sys_id) {
-    return callback("Missing required param sys_id");
-  }
-  const sys_id = event.sys_id;
+  const sys_id = event.sys_id || "";
   console.log("Creating new SNOW interaction for sys_id: ", sys_id);
   endPoint = `${context.SERVICE_NOW_API_ROOT}/now/table/interaction`;
   console.log(endPoint);
@@ -31,7 +28,7 @@ exports.handler = async function (context, event, callback) {
     method: "post",
     url: endPoint,
     responseType: "json",
-    data: { type: "phone", opened_for: userId },
+    data: { type: "phone", opened_for: sys_id },
   })
     .then(({ data }) => {
       // handle success
@@ -45,7 +42,7 @@ exports.handler = async function (context, event, callback) {
         return callback(null, {});
       } else {
         // handle success
-        let interaction = data.result[0];
+        let interaction = data.result;
         response.setBody(interaction);
         console.log(
           `Interaction created ${interaction.number} with sys_id: ${interaction.sys_id}`
@@ -56,7 +53,7 @@ exports.handler = async function (context, event, callback) {
     })
     .catch(function (error) {
       // handle error
-      console.log(error);
+      console.log("Error creating incident, SNOW API returned error", error);
       return callback(error);
     });
 };
